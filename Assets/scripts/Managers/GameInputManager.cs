@@ -1,0 +1,46 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GameInputManager : MonoBehaviour {
+    public static GameInputManager Instance { get; private set; }
+
+    private PlayerInputActions inputActions;
+
+    private void Awake() {
+        if (Instance == null) {
+            Instance = this;
+        } else {
+            Debug.LogWarning("GameInputManager: Instance already Exist. Removing Object");
+            Destroy(gameObject);
+        }
+
+        inputActions = new PlayerInputActions();
+    }
+
+    private void OnEnable() {
+        inputActions.Enable();
+
+        // Jump
+        inputActions.Player.Jump.performed += ctx => EventManager.Instance.playerInputEvents.Jump();
+        inputActions.Player.Jump.canceled += ctx => EventManager.Instance.playerInputEvents.JumpCanceled();
+
+        // Interact
+        inputActions.Player.Interact.performed += ctx => EventManager.Instance.playerInputEvents.Interact();
+    }
+
+    private void OnDisable() {
+        inputActions.Disable();
+
+        // Jump
+        inputActions.Player.Jump.performed -= ctx => EventManager.Instance.playerInputEvents.Jump();
+        inputActions.Player.Jump.canceled -= ctx => EventManager.Instance.playerInputEvents.JumpCanceled();
+
+        // Interact
+        inputActions.Player.Interact.performed -= ctx => EventManager.Instance.playerInputEvents.Interact();
+    }
+
+    public Vector2 GetMovementVectorNormalize() {
+        return inputActions.Player.Movement.ReadValue<Vector2>().normalized;
+    }
+}
