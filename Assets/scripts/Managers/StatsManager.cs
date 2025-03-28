@@ -7,7 +7,6 @@ public class StatsManager : MonoBehaviour {
 
     private int coins = 0;
 
-
     private void Awake() {
         if (Instance == null) {
             Instance = this;
@@ -18,10 +17,16 @@ public class StatsManager : MonoBehaviour {
     }
 
     private void OnEnable() {
-        
+        EventManager.Instance.coinEvents.OnCoinCollected += HandleCoinCollected;
     }
 
     private void OnDisable() {
-        
+        EventManager.Instance.coinEvents.OnCoinCollected -= HandleCoinCollected;
+    }
+
+    private void HandleCoinCollected(int amount) {
+        coins += amount;
+        Debug.Log(coins);
+        EventManager.Instance.coinEvents.CoinValueChange(coins);
     }
 }

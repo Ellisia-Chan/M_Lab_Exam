@@ -27,7 +27,14 @@ public abstract class Interactible : MonoBehaviour {
         }
     }
 
-    protected abstract void HandleInteract();
+    private void HandleInteract() {
+        if (playerInRange) {
+            interactPrompt.SetActive(false);
+            Interact();
+        }
+    }
+
+    protected abstract void Interact();
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.GetComponent<PlayerController>() != null) {

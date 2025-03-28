@@ -5,6 +5,8 @@ using UnityEngine;
 public class Coin : MonoBehaviour {
     private const string COIN_COLLECT = "coinCollect";
 
+    [SerializeField] private int coinValue = 1;
+
     private BoxCollider2D boxCollider2D;
     private Animator animator;
 
@@ -17,6 +19,7 @@ public class Coin : MonoBehaviour {
         if (collision.gameObject.GetComponent<PlayerController>() != null) {
             boxCollider2D.enabled = false;
             animator.SetTrigger(COIN_COLLECT);
+            EventManager.Instance.coinEvents.CoinCollected(coinValue);
         }
     }
 

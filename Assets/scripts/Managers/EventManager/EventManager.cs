@@ -6,6 +6,7 @@ public class EventManager : MonoBehaviour {
     public static EventManager Instance { get; private set; }
 
     public PlayerInputEvents playerInputEvents { get; private set; }
+    public CoinEvents coinEvents { get; private set; }
 
     private void Awake() {
         if (Instance == null) {
@@ -19,11 +20,13 @@ public class EventManager : MonoBehaviour {
 
     private void InitializeEvents() {
         playerInputEvents = new PlayerInputEvents();
+        coinEvents = new CoinEvents();
     }
 
     private void UnSubscribeEvents() {
         if (Instance != null) {
             playerInputEvents.Clear();
+            coinEvents.Clear();
         }
     }
 
