@@ -27,6 +27,9 @@ public class GameInputManager : MonoBehaviour {
 
         // Interact
         inputActions.Player.Interact.performed += ctx => EventManager.Instance.playerInputEvents.Interact();
+
+        // Continue
+        inputActions.Player.Continue.performed += ctx => EventManager.Instance.playerInputEvents.Continue();
     }
 
     private void OnDisable() {
@@ -38,6 +41,10 @@ public class GameInputManager : MonoBehaviour {
 
         // Interact
         inputActions.Player.Interact.performed -= ctx => EventManager.Instance.playerInputEvents.Interact();
+
+        // Continue
+        inputActions.Player.Continue.performed -= ctx => EventManager.Instance.playerInputEvents.Continue();
+
     }
 
     public Vector2 GetMovementVectorNormalize() {

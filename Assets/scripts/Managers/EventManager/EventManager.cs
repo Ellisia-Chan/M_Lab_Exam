@@ -7,6 +7,7 @@ public class EventManager : MonoBehaviour {
 
     public PlayerInputEvents playerInputEvents { get; private set; }
     public CoinEvents coinEvents { get; private set; }
+    public DialogueEvents dialogueEvents { get; private set; }
 
     private void Awake() {
         if (Instance == null) {
@@ -21,12 +22,14 @@ public class EventManager : MonoBehaviour {
     private void InitializeEvents() {
         playerInputEvents = new PlayerInputEvents();
         coinEvents = new CoinEvents();
+        dialogueEvents = new DialogueEvents();
     }
 
     private void UnSubscribeEvents() {
         if (Instance != null) {
             playerInputEvents.Clear();
             coinEvents.Clear();
+            dialogueEvents.Clear();
         }
     }
 

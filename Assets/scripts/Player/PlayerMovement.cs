@@ -43,11 +43,13 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private void HandleMovement() {
-        rb.velocity = new Vector2(moveVector.x * moveSpeed, rb.velocity.y);
+        if (!DialogueManager.Instance.IsDialoguePlaying()) {
+            rb.velocity = new Vector2(moveVector.x * moveSpeed, rb.velocity.y); 
+        }
     }
 
     private void HandleJump() {
-        if (isGrounded) {
+        if (isGrounded && !DialogueManager.Instance.IsDialoguePlaying()) {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
     }

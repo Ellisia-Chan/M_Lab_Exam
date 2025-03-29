@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour {
     public static GameManager Instance { get; private set; }
 
     private Vector2 checkpointPos = Vector2.zero;
-    private bool checkPointSet = false;
+    //private bool checkPointSet = false;
 
     private void Awake() {
         if (Instance == null) {

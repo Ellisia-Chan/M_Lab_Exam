@@ -8,6 +8,10 @@ public class CoinUI : MonoBehaviour {
 
     [SerializeField] private TextMeshProUGUI coinText;
 
+    private void Start() {
+        UpdateCoinUI(StatsManager.Instance.GetPlayerCoins());
+    }
+
     private void OnEnable() {
         if (EventManager.Instance != null) {
             EventManager.Instance.coinEvents.OnCoinValueChange += UpdateCoinUI; 

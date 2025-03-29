@@ -15,7 +15,7 @@ public class PlayerAnimator : MonoBehaviour {
     }
 
     private void Update() {
-        if (animator != null && GameInputManager.Instance != null) {
+        if (animator != null && GameInputManager.Instance != null && !DialogueManager.Instance.IsDialoguePlaying()) {
             moveDir = GameInputManager.Instance.GetMovementVectorNormalize();
 
             if (moveDir != Vector2.zero) {

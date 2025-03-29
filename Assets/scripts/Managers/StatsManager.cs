@@ -29,4 +29,6 @@ public class StatsManager : MonoBehaviour {
         Debug.Log(coins);
         EventManager.Instance.coinEvents.CoinValueChange(coins);
     }
+
+    public int GetPlayerCoins() => coins;
 }
