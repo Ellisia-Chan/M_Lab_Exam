@@ -57,7 +57,7 @@ public class DialogueManager : MonoBehaviour {
         currentStory.BindExternalFunction("PlayerCoins", () => StatsManager.Instance.GetPlayerCoins());
 
         speakerArrow = npcArrow;
-        speakerArrow.SetActive(false);
+        if (speakerArrow != null) {speakerArrow.SetActive(false);}
 
         isDialoguePlaying = true;
         EventManager.Instance.dialogueEvents.DialogueStart();

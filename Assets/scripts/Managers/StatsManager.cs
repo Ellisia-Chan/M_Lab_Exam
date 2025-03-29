@@ -26,7 +26,6 @@ public class StatsManager : MonoBehaviour {
 
     private void HandleCoinCollected(int amount) {
         coins += amount;
-        Debug.Log(coins);
         EventManager.Instance.coinEvents.CoinValueChange(coins);
     }
 

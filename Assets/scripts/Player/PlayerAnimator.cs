@@ -15,15 +15,17 @@ public class PlayerAnimator : MonoBehaviour {
     }
 
     private void Update() {
-        if (animator != null && GameInputManager.Instance != null && !DialogueManager.Instance.IsDialoguePlaying()) {
-            moveDir = GameInputManager.Instance.GetMovementVectorNormalize();
+        if (animator != null) {
+            if (GameInputManager.Instance != null && !DialogueManager.Instance.IsDialoguePlaying() && GameManager.Instance.currentState == GameManager.State.ALIVE) {
+                moveDir = GameInputManager.Instance.GetMovementVectorNormalize();
 
-            if (moveDir != Vector2.zero) {
-                lastMoveDir = moveDir;
+                if (moveDir != Vector2.zero) {
+                    lastMoveDir = moveDir;
+                }
+
+                animator.SetFloat(X_DIR, lastMoveDir.x);
+                animator.SetBool(IS_MOVING, moveDir != Vector2.zero);
             }
-
-            animator.SetFloat(X_DIR, lastMoveDir.x);
-            animator.SetBool(IS_MOVING, moveDir != Vector2.zero);
         }
     }
 }

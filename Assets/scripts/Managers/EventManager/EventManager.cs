@@ -5,6 +5,7 @@ using UnityEngine;
 public class EventManager : MonoBehaviour {
     public static EventManager Instance { get; private set; }
 
+    public PlayerEvents playerEvents { get; private set; }
     public PlayerInputEvents playerInputEvents { get; private set; }
     public CoinEvents coinEvents { get; private set; }
     public DialogueEvents dialogueEvents { get; private set; }
@@ -23,6 +24,7 @@ public class EventManager : MonoBehaviour {
         playerInputEvents = new PlayerInputEvents();
         coinEvents = new CoinEvents();
         dialogueEvents = new DialogueEvents();
+        playerEvents = new PlayerEvents();
     }
 
     private void UnSubscribeEvents() {
@@ -30,6 +32,7 @@ public class EventManager : MonoBehaviour {
             playerInputEvents.Clear();
             coinEvents.Clear();
             dialogueEvents.Clear();
+            playerEvents.Clear();
         }
     }
 
