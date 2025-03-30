@@ -7,6 +7,6 @@ public class Signnage : Interactible {
     [SerializeField] TextAsset inkJSON;
 
     protected override void Interact() {
-        DialogueManager.Instance.EnterDialogueMode(inkJSON, null);
+        DialogueManager.Instance.EnterDialogueMode(inkJSON, null, null);
     }
 }

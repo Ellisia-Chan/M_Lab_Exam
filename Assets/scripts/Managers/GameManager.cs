@@ -31,6 +31,18 @@ public class GameManager : MonoBehaviour {
         checkPointSet = true;
     }
 
+    private void OnEnable() {
+        if (EventManager.Instance != null) {
+            EventManager.Instance.playerEvents.OnPlayerRespawn += RespawnPlayerState;
+        }
+    }
+
+    private void OnDisable() {
+        if (EventManager.Instance != null) {
+            EventManager.Instance.playerEvents.OnPlayerRespawn -= RespawnPlayerState;
+        }
+    }
+
     public void SetCheckPoint(Transform position) {
         checkpointPos = position.position;
         checkPointSet = true;
@@ -43,6 +55,9 @@ public class GameManager : MonoBehaviour {
             Debug.LogWarning("GameManager: No Checkpoint Set");
         }
 
+    }
+
+    private void RespawnPlayerState() {
         currentState = State.ALIVE;
     }
 }

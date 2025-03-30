@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField] private LayerMask groundLayer;
 
     [Header("Damage")]
-    [SerializeField] private float knockbackDuration = 0.5f;
+    [SerializeField] private float knockbackDuration = 0.3f;
 
     private Rigidbody2D rb;
 

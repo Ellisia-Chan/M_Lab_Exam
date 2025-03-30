@@ -1,18 +1,28 @@
-VAR required_coins = 3
+VAR required_coins = 0
+
+EXTERNAL HasInteracted()
+EXTERNAL SetHasInteracted()
 EXTERNAL PlayerCoins()
 
 -> check_coins
+
 === check_coins ===
 ~ temp player_coins = PlayerCoins()
 
-{ player_coins < required_coins:
-    #speaker: none
-    You need {required_coins} coins to interact.
+{ HasInteracted():
+    #speaker: npc
+    Good luck, traveler.
     -> END
 - else:
-    -> story
+    { player_coins < required_coins:
+        #speaker: none
+        You need {required_coins} coins to interact.
+        -> END
+    - else:
+        ~ SetHasInteracted()
+        -> story
+    }
 }
-
 
 
 === story ===
@@ -20,44 +30,36 @@ EXTERNAL PlayerCoins()
 Hey, you look new around here.
 
 #speaker: player
-Yeah, just arrived. Anything I should know?
-
-
-#speaker: npc
-That depends... What are you here for?
-
-+ [Just exploring.]
-    #speaker: player
-     Just exploring. a break from the city.
-
-    #speaker: npc
-    You picked a strange time to visit.
-    -> DONE
-
-+ [Looking for someone.]
-    #speaker: player
-    I’m looking for someone. My brother came here weeks ago.
-
-    #speaker: npc
-    I might've seen someone like that. What’s his name?
-    -> DONE
-
-+ [Just passing through.]
-    #speaker: player
-    I’m just passing through. Won’t be here long.
-
-    #speaker: npc
-    Then you better stay on the main road.
-    -> DONE
-    
-+ [None of your business.]
-    #speaker: player
-    That’s none of your business.
-
-    #speaker: npc
-    Fair enough. Just trying to be friendly.
+Yeah, I just arrived. I just need to pass through this forest. Anything I should know?
 
 #speaker: npc
-Either way, keep your eyes open. This place has secrets.
+You're entering the Num Forest.
+
+#speaker: npc
+To pass through this forest, you must find 10 frogs and answer their questions.
+
+#speaker: npc
+They will give you 1 diamond if your answer is correct.
+
+#speaker: npc
+At the end of the forest, Master Num Frog will take your diamonds as a fee to pass through.
+
+#speaker: player
+Are the questions hard?
+
+#speaker: npc
+Well, it depends on the frog, so...
+
+#speaker: player
+I'll take the challenge.
+
+#speaker: npc
+Well, good luck, traveler. Oh, and remember...
+
+#speaker: npc
+There are spikes and pitfalls in the forest, so be careful.
+
+#speaker: player
+I'll keep that in mind. Thank you!
 
 -> END

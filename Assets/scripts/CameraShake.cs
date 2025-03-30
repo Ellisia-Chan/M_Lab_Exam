@@ -27,6 +27,7 @@ public class CameraShake : MonoBehaviour {
 
             if (shakeTimer <= 0f && noise != null) {
                 noise.m_AmplitudeGain = 0f;
+                noise.m_FrequencyGain = 0f;
             }
         }
     }
@@ -35,6 +36,7 @@ public class CameraShake : MonoBehaviour {
         if (noise == null) return;
 
         noise.m_AmplitudeGain = intensity;
+        noise.m_FrequencyGain = 1f;
         shakeTimer = time;
     }
 

@@ -23,6 +23,9 @@ public class DialogueManager : MonoBehaviour {
     private bool isDisplayingChoices = false;
 
     private GameObject speakerArrow;
+    private string currentNPCID;
+
+    private Dictionary<string, bool> interactedNPCS = new Dictionary<string, bool>();
 
     private void Awake() {
         if (Instance == null) {
@@ -52,9 +55,16 @@ public class DialogueManager : MonoBehaviour {
         GetChoicesText();
     }
 
-    public void EnterDialogueMode(TextAsset inkJSON, GameObject npcArrow) {
+    public void EnterDialogueMode(TextAsset inkJSON, GameObject npcArrow, string npcID) {
         currentStory = new Story(inkJSON.text);
+        currentNPCID = npcID;
+
         currentStory.BindExternalFunction("PlayerCoins", () => StatsManager.Instance.GetPlayerCoins());
+
+        if (currentNPCID != null) {
+            currentStory.BindExternalFunction("HasInteracted", () => interactedNPCS.ContainsKey(currentNPCID) && interactedNPCS[currentNPCID]);
+            currentStory.BindExternalFunction("SetHasInteracted", () => interactedNPCS[currentNPCID] = true);
+        }
 
         speakerArrow = npcArrow;
         if (speakerArrow != null) {speakerArrow.SetActive(false);}

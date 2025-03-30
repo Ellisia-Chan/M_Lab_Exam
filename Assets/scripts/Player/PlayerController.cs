@@ -5,6 +5,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
     public static PlayerController Instance { get; private set; }
 
+    [SerializeField] private float cameraShakeDuration = 0.5f;
+    [SerializeField] private float cameraShakeIntensity = 0.5f;
+
     private Rigidbody2D rb;
 
     private int health = 100;
@@ -49,7 +52,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     public void HandleDamage(int damage) {
-        if (CameraShake.Instance != null) CameraShake.Instance.Shake(6f, 0.5f);
+        if (CameraShake.Instance != null) CameraShake.Instance.Shake(cameraShakeIntensity, cameraShakeDuration);
 
         health -= damage;
         CheckHealth();
@@ -57,15 +60,15 @@ public class PlayerController : MonoBehaviour {
 
     private void Die() {
         GameManager.Instance.currentState = GameManager.State.DEAD;
+        EventManager.Instance.playerEvents.PlayerDeath();
         rb.velocity = Vector2.zero;
         StartCoroutine(RespawnSequence());
     }
 
     private IEnumerator RespawnSequence() {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSecondsRealtime(3f);
 
         health = 100;
         GameManager.Instance.RespawnPlayer();
     }
-
 }

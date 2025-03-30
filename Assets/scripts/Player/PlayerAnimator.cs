@@ -25,7 +25,12 @@ public class PlayerAnimator : MonoBehaviour {
 
                 animator.SetFloat(X_DIR, lastMoveDir.x);
                 animator.SetBool(IS_MOVING, moveDir != Vector2.zero);
+            } else {
+                if (GameManager.Instance.currentState == GameManager.State.DEAD) {
+                    animator.SetBool(IS_MOVING, false);
+                }
             }
+
         }
     }
 }
