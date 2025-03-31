@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour {
         if (EventManager.Instance != null) {
             EventManager.Instance.playerInputEvents.OnInteractAction += HandleInteract;
             EventManager.Instance.playerEvents.OnPlayerHit += HandleDamage;
+            EventManager.Instance.playerEvents.OnPlayerRespawn += PlayerHealthChange;
         }
     }
 
@@ -34,6 +35,13 @@ public class PlayerController : MonoBehaviour {
         if (EventManager.Instance != null) {
             EventManager.Instance.playerInputEvents.OnInteractAction -= HandleInteract;
             EventManager.Instance.playerEvents.OnPlayerHit -= HandleDamage;
+            EventManager.Instance.playerEvents.OnPlayerRespawn -= PlayerHealthChange;
+        }
+    }
+
+    private void Start() {
+        if (EventManager.Instance != null) {
+            EventManager.Instance.playerEvents.PlayerHealthChange(health); 
         }
     }
 
@@ -44,7 +52,10 @@ public class PlayerController : MonoBehaviour {
 
 
     private void CheckHealth() {
-        Debug.Log("Health: " + health);
+        if (EventManager.Instance != null) {
+            EventManager.Instance.playerEvents.PlayerHealthChange(health);
+        }
+
         if (health <= 0) {
             Debug.Log("Dead");
             Die();
@@ -69,6 +80,13 @@ public class PlayerController : MonoBehaviour {
         yield return new WaitForSecondsRealtime(3f);
 
         health = 100;
+
         GameManager.Instance.RespawnPlayer();
+    }
+
+    private void PlayerHealthChange() {
+        if (EventManager.Instance != null) {
+            EventManager.Instance.playerEvents.PlayerHealthChange(health);
+        }
     }
 }
