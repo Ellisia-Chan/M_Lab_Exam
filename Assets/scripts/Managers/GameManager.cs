@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour {
 
     private Vector2 checkpointPos = Vector2.zero;
     private bool checkPointSet = false;
+    private  float gameTime;
 
     public enum State {
         ALIVE,
@@ -29,6 +30,8 @@ public class GameManager : MonoBehaviour {
 
         checkpointPos = player.transform.position;
         checkPointSet = true;
+
+        gameTime = Time.time;
     }
 
     private void OnEnable() {

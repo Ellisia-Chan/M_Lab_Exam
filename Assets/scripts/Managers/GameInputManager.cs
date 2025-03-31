@@ -7,6 +7,8 @@ public class GameInputManager : MonoBehaviour {
 
     private PlayerInputActions inputActions;
 
+    private bool interactPressed = false;
+
     private void Awake() {
         if (Instance == null) {
             Instance = this;
@@ -22,8 +24,14 @@ public class GameInputManager : MonoBehaviour {
         inputActions.Enable();
 
         // Jump
-        inputActions.Player.Jump.performed += ctx => EventManager.Instance.playerInputEvents.Jump();
-        inputActions.Player.Jump.canceled += ctx => EventManager.Instance.playerInputEvents.JumpCanceled();
+        inputActions.Player.Jump.performed += ctx => {
+            EventManager.Instance.playerInputEvents.Jump();
+            interactPressed = true;
+        };
+        inputActions.Player.Jump.canceled += ctx => {
+            EventManager.Instance.playerInputEvents.JumpCanceled();
+            interactPressed = false;
+        };
 
         // Interact
         inputActions.Player.Interact.performed += ctx => EventManager.Instance.playerInputEvents.Interact();
@@ -49,5 +57,11 @@ public class GameInputManager : MonoBehaviour {
 
     public Vector2 GetMovementVectorNormalize() {
         return inputActions.Player.Movement.ReadValue<Vector2>().normalized;
+    }
+
+    public bool GetSubmitPress() {
+        bool result = interactPressed;
+        interactPressed = false;
+        return result;
     }
 }

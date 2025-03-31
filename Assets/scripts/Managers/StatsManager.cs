@@ -6,7 +6,7 @@ public class StatsManager : MonoBehaviour {
     public static StatsManager Instance { get; private set; }
 
     private int coins = 0;
-    private int diamonds = 0;
+    private int interactedFrogs = 0;
 
     private void Awake() {
         if (Instance == null) {
@@ -19,10 +19,12 @@ public class StatsManager : MonoBehaviour {
 
     private void OnEnable() {
         EventManager.Instance.coinEvents.OnCoinCollected += HandleCoinCollected;
+        EventManager.Instance.frogEvents.OnFrogInteracted += HandleFrogInteracted;
     }
 
     private void OnDisable() {
         EventManager.Instance.coinEvents.OnCoinCollected -= HandleCoinCollected;
+        EventManager.Instance.frogEvents.OnFrogInteracted -= HandleFrogInteracted;
     }
 
     private void HandleCoinCollected(int amount) {
@@ -30,5 +32,11 @@ public class StatsManager : MonoBehaviour {
         EventManager.Instance.coinEvents.CoinValueChange(coins);
     }
 
+    private void HandleFrogInteracted() {
+        interactedFrogs++;
+        EventManager.Instance.frogEvents.FrogCountChange(interactedFrogs);
+    }
+
     public int GetPlayerCoins() => coins;
+    public int GetFrogInteractedCount() => interactedFrogs;
 }

@@ -8,8 +8,12 @@ using UnityEngine.EventSystems;
 public class DialogueManager : MonoBehaviour {
     public static DialogueManager Instance { get; private set; }
 
+    [Header("Params")]
+    [SerializeField] private float typingSpeed = 0.02f;
+
     [Header("Dialogue UI")]
     [SerializeField] private TextMeshProUGUI dialogueText;
+    [SerializeField] private GameObject continueIcon;
 
     [Header("Choices UI")]
     [SerializeField] private GameObject[] choices;
@@ -21,6 +25,9 @@ public class DialogueManager : MonoBehaviour {
     private Story currentStory;
     private bool isDialoguePlaying = false;
     private bool isDisplayingChoices = false;
+
+    private Coroutine displayLineCoroutine;
+    private bool canContinueToNextLine = false;
 
     private GameObject speakerArrow;
     private string currentNPCID;
@@ -59,17 +66,21 @@ public class DialogueManager : MonoBehaviour {
         currentStory = new Story(inkJSON.text);
         currentNPCID = npcID;
 
-        currentStory.BindExternalFunction("PlayerCoins", () => StatsManager.Instance.GetPlayerCoins());
 
         if (currentNPCID != null) {
             currentStory.BindExternalFunction("HasInteracted", () => interactedNPCS.ContainsKey(currentNPCID) && interactedNPCS[currentNPCID]);
             currentStory.BindExternalFunction("SetHasInteracted", () => interactedNPCS[currentNPCID] = true);
+
+            if (currentNPCID.Contains("frogQuiz") && !interactedNPCS.ContainsKey(currentNPCID)) {
+                EventManager.Instance.frogEvents.FrogInteracted();
+            }
         }
 
         speakerArrow = npcArrow;
-        if (speakerArrow != null) {speakerArrow.SetActive(false);}
+        if (speakerArrow != null) { speakerArrow.SetActive(false); }
 
         isDialoguePlaying = true;
+        canContinueToNextLine = true;
         EventManager.Instance.dialogueEvents.DialogueStart();
 
         UIManager.Instance.ToggleDialogueUI(true);
@@ -79,10 +90,10 @@ public class DialogueManager : MonoBehaviour {
     }
 
     private IEnumerator ExitDialogueMode() {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.5f);
 
-        if (playerArrow != null) {playerArrow.SetActive(false);}
-        if (speakerArrow != null) {speakerArrow.SetActive(false);}
+        if (playerArrow != null) { playerArrow.SetActive(false); }
+        if (speakerArrow != null) { speakerArrow.SetActive(false); }
 
         EventManager.Instance.dialogueEvents.DialogueEnd();
         isDialoguePlaying = false;
@@ -97,15 +108,38 @@ public class DialogueManager : MonoBehaviour {
     }
 
     private void ContinueStory() {
-        if (isDialoguePlaying && !isDisplayingChoices) {
-            if (currentStory.canContinue) {
-                dialogueText.text = currentStory.Continue();
-                HandleTags(currentStory.currentTags);
-                DisplayChoices();
-            } else {
-                StartCoroutine(ExitDialogueMode());
+        if (canContinueToNextLine) {
+            if (isDialoguePlaying && !isDisplayingChoices) {
+                if (currentStory.canContinue) {
+
+                    if (displayLineCoroutine != null) {
+                        StopCoroutine(displayLineCoroutine);
+                    }
+
+                    displayLineCoroutine = StartCoroutine(DisplayLine(currentStory.Continue()));
+
+                    HandleTags(currentStory.currentTags);
+                } else {
+                    StartCoroutine(ExitDialogueMode());
+                }
             }
         }
+    }
+
+    private IEnumerator DisplayLine(string line) {
+        dialogueText.text = "";
+        canContinueToNextLine = false;
+        continueIcon.SetActive(false);
+        HideChoices();
+
+        foreach (char letter in line.ToCharArray()) {
+            dialogueText.text += letter;
+            yield return new WaitForSeconds(typingSpeed);
+        }
+
+        canContinueToNextLine = true;
+        continueIcon.SetActive(true);
+        DisplayChoices();
     }
 
     private void DisplayChoices() {
@@ -113,7 +147,6 @@ public class DialogueManager : MonoBehaviour {
 
         isDisplayingChoices = currentChoices.Count > 0;
 
-        // This line can be used to create a choices entry animation
         if (!isDisplayingChoices) {
             if (choices[0].gameObject.activeSelf) {
                 foreach (GameObject choice in choices) {
@@ -134,9 +167,15 @@ public class DialogueManager : MonoBehaviour {
             choiceTexts[index].text = choice.text;
             index++;
         }
-     }
+    }
 
-     private void GetChoicesText() {
+    private void HideChoices() {
+        foreach (GameObject choiceButton in choices) {
+            choiceButton.gameObject.SetActive(false);
+        }
+    }
+
+    private void GetChoicesText() {
         choiceTexts = new TextMeshProUGUI[choices.Length];
 
         int index = 0;
@@ -144,23 +183,25 @@ public class DialogueManager : MonoBehaviour {
             choiceTexts[index] = choice.GetComponentInChildren<TextMeshProUGUI>();
             index++;
         }
-     }
+    }
 
-     public void MakeChoice(int choiceIndex) {
-        isDisplayingChoices = false;
-        EventSystem.current.SetSelectedGameObject(null);
+    public void MakeChoice(int choiceIndex) {
+        if (canContinueToNextLine) {
+            isDisplayingChoices = false;
+            EventSystem.current.SetSelectedGameObject(null);
 
-        foreach (GameObject choice in choices) {
-            choice.SetActive(false);
+            foreach (GameObject choice in choices) {
+                choice.SetActive(false);
+            }
+
+            UIManager.Instance.ToggleDialogueChoiceUI(false);
+
+            currentStory.ChooseChoiceIndex(choiceIndex);
+            ContinueStory();
         }
+    }
 
-        UIManager.Instance.ToggleDialogueChoiceUI(false);
-
-        currentStory.ChooseChoiceIndex(choiceIndex);
-        ContinueStory();
-     }
-
-     private void HandleTags(List<string> tags) {
+    private void HandleTags(List<string> tags) {
 
         if (playerArrow != null && speakerArrow != null) {
             playerArrow.SetActive(false);
@@ -191,10 +232,12 @@ public class DialogueManager : MonoBehaviour {
                     }
                     break;
                 case "reward":
+                    Debug.Log(value);
+                    EventManager.Instance.coinEvents.CoinCollected(int.Parse(value));
                     break;
             }
         }
-     }
+    }
 
-     public bool IsDialoguePlaying() => isDialoguePlaying;
+    public bool IsDialoguePlaying() => isDialoguePlaying;
 }

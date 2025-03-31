@@ -10,7 +10,9 @@ public class DialogueTrigger : Interactible {
     [SerializeField] private string npcID;
 
     private void Awake() {
-        npcID = gameObject.name;
+        if (npcID == "" || npcID == null) {
+            npcID = gameObject.name;
+        }
     }
 
     protected override void Interact() {

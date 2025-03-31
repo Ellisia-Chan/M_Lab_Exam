@@ -28,6 +28,14 @@ public class PlayerMovement : MonoBehaviour {
     private void OnEnable() {
         if (EventManager.Instance != null) {
             EventManager.Instance.playerInputEvents.OnJumpAction += HandleJump;
+            EventManager.Instance.dialogueEvents.OnDialogueStart += FreezePosition;
+        }
+    }
+
+    private void OnDisable() {
+        if (EventManager.Instance != null) {
+            EventManager.Instance.playerInputEvents.OnJumpAction -= HandleJump;
+            EventManager.Instance.dialogueEvents.OnDialogueStart -= FreezePosition;
         }
     }
 
@@ -78,6 +86,12 @@ public class PlayerMovement : MonoBehaviour {
     private IEnumerator ResetKnockback() {
         yield return new WaitForSeconds(knockbackDuration);
         isKnockedBack = false;
+    }
+
+    private void FreezePosition() {
+        if (rb != null) {
+            rb.velocity = Vector2.zero;
+        }
     }
 
 #if UNITY_EDITOR

@@ -14,13 +14,17 @@ public class CoinUI : MonoBehaviour {
 
     private void OnEnable() {
         if (EventManager.Instance != null) {
-            EventManager.Instance.coinEvents.OnCoinValueChange += UpdateCoinUI; 
+            EventManager.Instance.coinEvents.OnCoinValueChange += UpdateCoinUI;
+        }
+
+        if (StatsManager.Instance != null) {
+            UpdateCoinUI(StatsManager.Instance.GetPlayerCoins());
         }
     }
 
     private void OnDisable() {
         if (EventManager.Instance != null) {
-            EventManager.Instance.coinEvents.OnCoinValueChange -= UpdateCoinUI; 
+            EventManager.Instance.coinEvents.OnCoinValueChange -= UpdateCoinUI;
         }
     }
 

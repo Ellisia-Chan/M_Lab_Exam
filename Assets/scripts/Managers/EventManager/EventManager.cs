@@ -10,6 +10,7 @@ public class EventManager : MonoBehaviour {
     public CoinEvents coinEvents { get; private set; }
     public DialogueEvents dialogueEvents { get; private set; }
     public UIEvents uiEvents { get; private set; }
+    public FrogEvents frogEvents { get; private set; }
 
     private void Awake() {
         if (Instance == null) {
@@ -27,6 +28,7 @@ public class EventManager : MonoBehaviour {
         dialogueEvents = new DialogueEvents();
         playerEvents = new PlayerEvents();
         uiEvents = new UIEvents();
+        frogEvents = new FrogEvents();
     }
 
     private void UnSubscribeEvents() {
@@ -36,6 +38,7 @@ public class EventManager : MonoBehaviour {
             dialogueEvents.Clear();
             playerEvents.Clear();
             uiEvents.Clear();
+            frogEvents.Clear();
         }
     }
 
