@@ -29,14 +29,6 @@ Let’s see if your intellect can handle this one.
 === math_question ===
 #speaker: npc
 What is (7 + 5) * 2?
-
-+ [24]
-    #speaker: player
-    24
-    
-    #speaker: npc #reward: 10
-    <b><color=green>Correct!</color></b> Well done! Here are your 10 coins. You may continue.
-    -> END
     
 + [20]
     #speaker: player
@@ -52,6 +44,14 @@ What is (7 + 5) * 2?
     
     #speaker: npc
     <color=red>Incorrect.</color> Not quite. Keep trying, traveler.
+    -> END
+    
++ [24]
+    #speaker: player
+    24
+    
+    #speaker: npc #reward: 10
+    <b><color=green>Correct!</color></b> Well done! Here are your <color=\#FFD700>10 coins</color>. You may continue.
     -> END
     
 + [18]

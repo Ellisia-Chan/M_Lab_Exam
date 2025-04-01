@@ -16,13 +16,13 @@ EXTERNAL SetHasInteracted()
 
 === story ===
 #speaker: npc
-Welcome, traveler. You have answered my kin’s questions, but one final task remains.
+Welcome, traveler. I am Master Num Frog, You have answered 10 of my kin’s questions, but one final task remains.
 
 #speaker: player
 What must I do?
 
 #speaker: npc
-The toll to pass is all the coins. Hand them over, and the path shall be yours.
+The toll to pass is all the <color=\#FFD700>coins</color>. Hand them over, and the path shall be yours.
 
 #speaker: player
 Here you go.
@@ -38,7 +38,7 @@ Do you have any other questions before you go?
 
 + [Why do I need to pay coins?]
     #speaker: player
-    Why do I need to pay coins?
+    Why do I need to pay <color=\#FFD700>coins</color>?
     
     #speaker: npc
     Passage through the Num Forest is a privilege, not a right. Knowledge and wisdom must be earned.
@@ -54,7 +54,7 @@ Do you have any other questions before you go?
 
 + [Can I get my coins back?]
     #speaker: player
-    Can I get my coins back?
+    Can I get my <color=\#FFD700>coins</color> back?
     
     #speaker: npc
     Ha! You are bold, but no. The toll is final.

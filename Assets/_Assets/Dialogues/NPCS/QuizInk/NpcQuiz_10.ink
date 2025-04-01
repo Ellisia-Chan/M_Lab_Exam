@@ -43,7 +43,7 @@ What is 3 + 3 * 0?
     0
     
     #speaker: npc #reward: 10
-    <b><color=green>Correct!</color></b> Well done! Here are your 10 coins. You may proceed.
+    <b><color=green>Correct!</color></b> Well done! Here are your <color=\#FFD700>10 coins</color>. You may proceed.
     -> END
     
 + [3]

@@ -29,14 +29,6 @@ Very well. Solve this, and you may continue.
 === math_question ===
 #speaker: npc
 What is 12 + 8 - 4?
-
-+ [16]
-    #speaker: player
-    16
-    
-    #speaker: npc #reward: 10
-    <b><color=green>Correct!</color></b> Excellent! Here are 10 coins. Proceed safely.
-    -> END
     
 + [18]
     #speaker: player
@@ -44,6 +36,14 @@ What is 12 + 8 - 4?
     
     #speaker: npc
     <color=red>Incorrect.</color> That’s not quite right. Better luck next time.
+    -> END
+    
++ [16]
+    #speaker: player
+    16
+    
+    #speaker: npc #reward: 10
+    <b><color=green>Correct!</color></b> Excellent! Here are <color=\#FFD700>10 coins</color>. Proceed safely.
     -> END
     
 + [20]

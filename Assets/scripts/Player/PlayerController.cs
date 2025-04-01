@@ -9,11 +9,16 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private float cameraShakeIntensity = 0.5f;
     [SerializeField] private float damageColorDuration = 0.2f;
 
+    [Header("Dialogue InkJSON")]
+    [SerializeField] private TextAsset playerInkJSON;
+    [SerializeField] private float dialogueStartDelay = 0.8f;
+
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
 
     private int health = 100;
+    private bool playerDialoguePlayed = false;
 
     private void Awake() {
         if (Instance == null) {
@@ -33,6 +38,7 @@ public class PlayerController : MonoBehaviour {
             EventManager.Instance.playerInputEvents.OnInteractAction += HandleInteract;
             EventManager.Instance.playerEvents.OnPlayerHit += HandleDamage;
             EventManager.Instance.playerEvents.OnPlayerRespawn += PlayerHealthChange;
+            EventManager.Instance.dialogueEvents.OnDialogueEnd += HandlePlayerDialogue;
         }
     }
 
@@ -41,6 +47,8 @@ public class PlayerController : MonoBehaviour {
             EventManager.Instance.playerInputEvents.OnInteractAction -= HandleInteract;
             EventManager.Instance.playerEvents.OnPlayerHit -= HandleDamage;
             EventManager.Instance.playerEvents.OnPlayerRespawn -= PlayerHealthChange;
+            EventManager.Instance.dialogueEvents.OnDialogueEnd -= HandlePlayerDialogue;
+
         }
     }
 
@@ -100,6 +108,20 @@ public class PlayerController : MonoBehaviour {
     private void PlayerHealthChange() {
         if (EventManager.Instance != null) {
             EventManager.Instance.playerEvents.PlayerHealthChange(health);
+        }
+    }
+
+    private void HandlePlayerDialogue() {
+        if (StatsManager.Instance.GetFrogInteractedCount() >= 10 && !playerDialoguePlayed) {
+            playerDialoguePlayed = true;
+            StartCoroutine(StartPlayerDialogue());
+        }
+    }
+
+    private IEnumerator StartPlayerDialogue() {
+        yield return new WaitForSeconds(dialogueStartDelay);
+        if (!DialogueManager.Instance.IsDialoguePlaying()) {
+            DialogueManager.Instance.EnterDialogueMode(playerInkJSON, null, null);
         }
     }
 }

@@ -24,8 +24,6 @@ public class DialogueTrigger : Interactible {
     protected override void Interact() {
         if (!DialogueManager.Instance.IsDialoguePlaying() && ink != null && speakerArrow != null) {
             DialogueManager.Instance.EnterDialogueMode(ink, speakerArrow, npcID);
-        } else {
-            Debug.LogWarning("Dialogue Trigger: Dialogue Is Playing or inkJSON or speakerArrow is null");
         }
     }
 

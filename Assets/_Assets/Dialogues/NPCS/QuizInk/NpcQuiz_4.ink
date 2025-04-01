@@ -30,14 +30,6 @@ Very well. Solve this, and you may continue.
 #speaker: npc
 What is 6 + 7?
 
-+ [13]
-    #speaker: player
-    13
-    
-    #speaker: npc #reward: 10
-    <b><color=green>Correct!</color></b> Impressive! Take these 10 coins and be on your way.
-    -> END
-    
 + [14]
     #speaker: player
     14
@@ -60,4 +52,12 @@ What is 6 + 7?
     
     #speaker: npc
     <color=red>Incorrect.</color> That is not correct. Safe travels regardless.
+    -> END
+    
++ [13]
+    #speaker: player
+    13
+    
+    #speaker: npc #reward: 10
+    <b><color=green>Correct!</color></b> Impressive! Take these <color=\#FFD700>10 coins</color> and be on your way.
     -> END

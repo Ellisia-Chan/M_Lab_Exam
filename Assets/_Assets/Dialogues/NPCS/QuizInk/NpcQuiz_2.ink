@@ -30,20 +30,20 @@ A simple one. Solve this, and you may proceed.
 #speaker: npc
 What is 7 + 3?
 
-+ [10]
-    #speaker: player
-    10
-    
-    #speaker: npc #reward: 10
-    <b><color=green>Correct!</color></b> You have a sharp mind! Take these 10 coins and continue your journey.
-    -> END
-    
 + [9]
     #speaker: player
     9
     
     #speaker: npc
     <color=red>Incorrect.</color> That is not the correct answer. Be more careful next time.
+    -> END
+
++ [10]
+    #speaker: player
+    10
+    
+    #speaker: npc #reward: 10
+    <b><color=green>Correct!</color></b> You have a sharp mind! Take these <color=\#FFD700>10 coins</color> and continue your journey.
     -> END
     
 + [11]

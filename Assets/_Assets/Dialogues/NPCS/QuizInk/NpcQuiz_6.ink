@@ -29,14 +29,6 @@ Something simple, but challenging enough to test your wits.
 === math_question ===
 #speaker: npc
 What is 9 * (3 - 1)?
-
-+ [18]
-    #speaker: player
-    18
-    
-    #speaker: npc #reward: 10
-    <b><color=green>Correct!</color></b> Impressive! Here are your 10 coins. Good luck on your journey.
-    -> END
     
 + [22]
     #speaker: player
@@ -52,6 +44,14 @@ What is 9 * (3 - 1)?
     
     #speaker: npc
     <color=red>Incorrect.</color> Oops! That's not correct. Try again, traveler.
+    -> END
+    
++ [18]
+    #speaker: player
+    18
+    
+    #speaker: npc #reward: 10
+    <b><color=green>Correct!</color></b> Impressive! Here are your <color=\#FFD700>10 coins</color>. Good luck on your journey.
     -> END
     
 + [24]

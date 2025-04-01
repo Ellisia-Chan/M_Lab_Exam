@@ -30,14 +30,6 @@ Very well. Here is your challenge.
 #speaker: npc
 What is (6 + 4) / 2?
 
-+ [5]
-    #speaker: player
-    5
-    
-    #speaker: npc #reward: 10
-    <b><color=green>Correct!</color></b> Here is your 10 coins.
-    -> END
-    
 + [10]
     #speaker: player
     10
@@ -52,6 +44,14 @@ What is (6 + 4) / 2?
     
     #speaker: npc
     <color=red>Incorrect.</color> That is not the right answer.  Sorry!
+    -> END
+    
++ [5]
+    #speaker: player
+    5
+    
+    #speaker: npc #reward: 10
+    <b><color=green>Correct!</color></b> Here is your <color=\#FFD700>10 coins</color>.
     -> END
     
 + [4]

@@ -29,10 +29,10 @@ You're entering the Num Forest.
 To pass through this forest, you must find 10 frogs and answer their questions.
 
 #speaker: npc
-They will give you coins if your answer is correct.
+They will give you <color=\#FFD700>coins</color> if your answer is correct.
 
 #speaker: npc
-At the end of the forest, Master Num Frog will take your coins as a fee to pass through.
+At the end of the forest, Master Num Frog will take your <color=\#FFD700>coins</color> as a fee to pass through.
 
 #speaker: player
 Are the questions hard?

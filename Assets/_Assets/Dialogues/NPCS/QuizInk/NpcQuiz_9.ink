@@ -35,7 +35,7 @@ What is 18 / 3 + 4?
     10
     
     #speaker: npc #reward: 10
-    <b><color=green>Correct!</color></b> Impressive! Here are your 10 coins. Continue with wisdom.
+    <b><color=green>Correct!</color></b> Impressive! Here are your <color=\#FFD700>10 coins</color>. Continue with wisdom.
     -> END
     
 + [12]

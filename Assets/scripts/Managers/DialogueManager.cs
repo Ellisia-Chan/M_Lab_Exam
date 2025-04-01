@@ -236,12 +236,23 @@ public class DialogueManager : MonoBehaviour {
                 case "speaker":
                     switch (value) {
                         case "player":
-                            playerArrow.SetActive(true);
-                            speakerArrow.SetActive(false);
+                            if (playerArrow != null) {
+                                playerArrow.SetActive(true);
+                            }
+
+                            if (speakerArrow != null) {
+                                speakerArrow.SetActive(false); 
+                            }
+
                             break;
                         case "npc":
-                            playerArrow.SetActive(false);
-                            speakerArrow.SetActive(true);
+                            if (playerArrow != null) {
+                                playerArrow.SetActive(false); 
+                            }
+
+                            if (speakerArrow != null) {
+                                speakerArrow.SetActive(true); 
+                            }
                             break;
                     }
                     break;
