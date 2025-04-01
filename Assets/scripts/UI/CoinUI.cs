@@ -28,6 +28,11 @@ public class CoinUI : MonoBehaviour {
         }
     }
 
+
+    /// <summary>
+    /// Updates the Coin UI text to display the specified amount.
+    /// </summary>
+    /// <param name="amount">The amount of coins to display.</param>
     private void UpdateCoinUI(int amount) {
         coinText.text = $"x {amount}";
     }

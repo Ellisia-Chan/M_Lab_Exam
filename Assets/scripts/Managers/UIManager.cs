@@ -19,6 +19,9 @@ public class UIManager : MonoBehaviour {
     [Header("CheckpointUI")]
     [SerializeField] private GameObject CheckpointUI;
 
+    [Header("GameOver UI")]
+    [SerializeField] private GameObject GameOverUI;
+
     private void Awake() {
         if (Instance == null) {
             Instance = this;
@@ -32,6 +35,7 @@ public class UIManager : MonoBehaviour {
         if (EventManager.Instance != null) {
             EventManager.Instance.playerEvents.OnPlayerDeath += ShowDeadUI;
             EventManager.Instance.playerEvents.OnPlayerRespawn += HideDeadUI;
+            EventManager.Instance.gameEvents.OnGameStateEnd += ShowGameOverUI;
 
         }
     }
@@ -40,6 +44,7 @@ public class UIManager : MonoBehaviour {
         if (EventManager.Instance != null) {
             EventManager.Instance.playerEvents.OnPlayerDeath -= ShowDeadUI;
             EventManager.Instance.playerEvents.OnPlayerRespawn -= HideDeadUI;
+            EventManager.Instance.gameEvents.OnGameStateEnd -= ShowGameOverUI;
 
         }
     }
@@ -65,7 +70,15 @@ public class UIManager : MonoBehaviour {
     // Checkpoint UI
     public void ToggleCheckpointUI(bool state) => CheckpointUI.SetActive(state);
 
+    // GameOver UI
+    public void ToggleGameOverUI(bool state) {
+        GameOverUI.SetActive(state);
+        statsUI.SetActive(false);
+    }
+
     private void ShowDeadUI() { ToggleDeadUI(true); }
     private void HideDeadUI() { ToggleDeadUI(false); }
+    private void ShowGameOverUI() { ToggleGameOverUI(true); }
+    private void HideGameOverUI() { ToggleGameOverUI(false); }
 
 }
