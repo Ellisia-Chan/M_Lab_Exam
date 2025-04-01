@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5672887103437972963}
   - component: {fileID: 5237749882804381141}
   - component: {fileID: 2118263536792913028}
-  - component: {fileID: 8827958242664021815}
   m_Layer: 0
   m_Name: Frog_9
   m_TagString: Untagged
@@ -155,22 +154,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2, y: 2}
   m_EdgeRadius: 0
---- !u!114 &8827958242664021815
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1730346919000020960}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2db13c7d150b2cc4ab993ba9853e259d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactPrompt: {fileID: 6934133447376851788}
-  inkJSON: {fileID: 0}
-  speakerArrow: {fileID: 3551352210643818608}
-  npcID: 
 --- !u!1 &3551352210643818608
 GameObject:
   m_ObjectHideFlags: 0

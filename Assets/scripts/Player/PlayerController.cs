@@ -7,8 +7,11 @@ public class PlayerController : MonoBehaviour {
 
     [SerializeField] private float cameraShakeDuration = 0.5f;
     [SerializeField] private float cameraShakeIntensity = 0.5f;
+    [SerializeField] private float damageColorDuration = 0.2f;
 
     private Rigidbody2D rb;
+    private SpriteRenderer spriteRenderer;
+    private Color originalColor;
 
     private int health = 100;
 
@@ -21,6 +24,8 @@ public class PlayerController : MonoBehaviour {
         }
 
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        originalColor = spriteRenderer.color;
     }
 
     private void OnEnable() {
@@ -67,6 +72,14 @@ public class PlayerController : MonoBehaviour {
 
         health -= damage;
         CheckHealth();
+
+        StartCoroutine(FlashRedOnDamage());
+    }
+
+    private IEnumerator FlashRedOnDamage() {
+        spriteRenderer.color = Color.red;
+        yield return new WaitForSeconds(damageColorDuration);
+        spriteRenderer.color = originalColor;
     }
 
     private void Die() {

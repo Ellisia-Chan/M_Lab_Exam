@@ -9,15 +9,28 @@ public class DialogueTrigger : Interactible {
     [SerializeField] private GameObject speakerArrow;
     [SerializeField] private string npcID;
 
+    private TextAsset ink;
+
     private void Awake() {
         if (npcID == "" || npcID == null) {
             npcID = gameObject.name;
         }
+
+        if (inkJSON != null) {
+            ink = inkJSON;
+        }
     }
 
     protected override void Interact() {
-        if (!DialogueManager.Instance.IsDialoguePlaying()) {
-            DialogueManager.Instance.EnterDialogueMode(inkJSON, speakerArrow, npcID);
+        if (!DialogueManager.Instance.IsDialoguePlaying() && ink != null && speakerArrow != null) {
+            DialogueManager.Instance.EnterDialogueMode(ink, speakerArrow, npcID);
+        } else {
+            Debug.LogWarning("Dialogue Trigger: Dialogue Is Playing or inkJSON or speakerArrow is null");
         }
+    }
+
+    // This is used when Dialogue has multipl ink files conditions
+    public void SetInkJSON(TextAsset textAsset) {
+        ink = textAsset;
     }
 }

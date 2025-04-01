@@ -7,6 +7,10 @@ public class FrogUI : MonoBehaviour {
     [Header("Frog UI")]
     [SerializeField] private TextMeshProUGUI frogCountText;
 
+    private void Start() {;
+        UpdateFrogCountText(StatsManager.Instance.GetFrogInteractedCount());
+    }
+
     private void OnEnable() {
         if (EventManager.Instance != null) {
             EventManager.Instance.frogEvents.OnFrogCountChange += UpdateFrogCountText;

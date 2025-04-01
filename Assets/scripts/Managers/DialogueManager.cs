@@ -71,7 +71,7 @@ public class DialogueManager : MonoBehaviour {
             currentStory.BindExternalFunction("HasInteracted", () => interactedNPCS.ContainsKey(currentNPCID) && interactedNPCS[currentNPCID]);
             currentStory.BindExternalFunction("SetHasInteracted", () => interactedNPCS[currentNPCID] = true);
 
-            if (currentNPCID.Contains("frogQuiz") && !interactedNPCS.ContainsKey(currentNPCID)) {
+            if (currentNPCID.Contains("FrogQuiz") && !interactedNPCS.ContainsKey(currentNPCID)) {
                 EventManager.Instance.frogEvents.FrogInteracted();
             }
         }
@@ -132,9 +132,23 @@ public class DialogueManager : MonoBehaviour {
         continueIcon.SetActive(false);
         HideChoices();
 
+        bool isAddingRichText = false;
+
         foreach (char letter in line.ToCharArray()) {
-            dialogueText.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
+
+            if (letter == '<' || isAddingRichText) {
+                isAddingRichText = true;
+                dialogueText.text += letter;
+                
+                if (letter == '>') {
+                    isAddingRichText = false;
+                }
+
+            } else {
+                dialogueText.text += letter;
+                yield return new WaitForSeconds(typingSpeed);
+            }
+
         }
 
         canContinueToNextLine = true;
@@ -234,6 +248,9 @@ public class DialogueManager : MonoBehaviour {
                 case "reward":
                     Debug.Log(value);
                     EventManager.Instance.coinEvents.CoinCollected(int.Parse(value));
+                    break;
+                case "coinSpend":
+                    EventManager.Instance.coinEvents.CoinSpend(int.Parse(value));
                     break;
             }
         }
