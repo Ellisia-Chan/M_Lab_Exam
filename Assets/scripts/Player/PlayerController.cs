@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour {
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
 
+    private PlayerMovement playerMovement;
+
     private int health = 100;
     private bool playerDialoguePlayed = false;
 
@@ -31,6 +33,7 @@ public class PlayerController : MonoBehaviour {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalColor = spriteRenderer.color;
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
     private void OnEnable() {
@@ -54,7 +57,7 @@ public class PlayerController : MonoBehaviour {
 
     private void Start() {
         if (EventManager.Instance != null) {
-            EventManager.Instance.playerEvents.PlayerHealthChange(health); 
+            EventManager.Instance.playerEvents.PlayerHealthChange(health);
         }
     }
 
@@ -64,6 +67,12 @@ public class PlayerController : MonoBehaviour {
     }
 
 
+    /// <summary>
+    /// Checks the player's health and performs necessary actions.
+    /// 
+    /// Parameters: None
+    /// Returns: None
+    /// </summary>
     private void CheckHealth() {
         if (EventManager.Instance != null) {
             EventManager.Instance.playerEvents.PlayerHealthChange(health);
@@ -75,6 +84,11 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+
+    /// <summary>
+    /// Handles the player taking damage, applying the damage to the player's health and triggering a camera shake effect.
+    /// </summary>
+    /// <param name="damage">The amount of damage to apply to the player's health.</param>
     public void HandleDamage(int damage) {
         if (CameraShake.Instance != null) CameraShake.Instance.Shake(cameraShakeIntensity, cameraShakeDuration);
 
@@ -84,12 +98,26 @@ public class PlayerController : MonoBehaviour {
         StartCoroutine(FlashRedOnDamage());
     }
 
+
+    /// <summary>
+    /// Flashes the player's sprite red for a specified duration to indicate damage taken.
+    /// 
+    /// Parameters: None
+    /// Returns: None
+    /// </summary>
     private IEnumerator FlashRedOnDamage() {
         spriteRenderer.color = Color.red;
         yield return new WaitForSeconds(damageColorDuration);
         spriteRenderer.color = originalColor;
     }
 
+
+    /// <summary>
+    /// Handles the player's death, updating the game state and triggering a respawn sequence.
+    /// 
+    /// Parameters: None
+    /// Returns: None
+    /// </summary>
     private void Die() {
         GameManager.Instance.currentState = GameManager.State.DEAD;
         EventManager.Instance.playerEvents.PlayerDeath();
@@ -97,6 +125,13 @@ public class PlayerController : MonoBehaviour {
         StartCoroutine(RespawnSequence());
     }
 
+
+    /// <summary>
+    /// Resets the player's state after a death, waiting for a specified duration before respawning.
+    /// 
+    /// Parameters: None
+    /// Returns: IEnumerator
+    /// </summary>
     private IEnumerator RespawnSequence() {
         yield return new WaitForSecondsRealtime(3f);
 
@@ -105,12 +140,26 @@ public class PlayerController : MonoBehaviour {
         GameManager.Instance.RespawnPlayer();
     }
 
+
+    /// <summary>
+    /// Updates the player's health by notifying the EventManager.
+    /// 
+    /// Parameters: None
+    /// Returns: None
+    /// </summary>
     private void PlayerHealthChange() {
         if (EventManager.Instance != null) {
             EventManager.Instance.playerEvents.PlayerHealthChange(health);
         }
     }
 
+
+    /// <summary>
+    /// Handles the player's dialogue after a certain number of interactions.
+    /// 
+    /// Parameters: None
+    /// Returns: None
+    /// </summary>
     private void HandlePlayerDialogue() {
         if (StatsManager.Instance.GetFrogInteractedCount() >= 10 && !playerDialoguePlayed) {
             playerDialoguePlayed = true;
@@ -118,10 +167,20 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+
+    /// <summary>
+    /// Starts the player's dialogue after a delay.
+    /// 
+    /// Parameters: None
+    /// Returns: IEnumerator
+    /// </summary>
     private IEnumerator StartPlayerDialogue() {
         yield return new WaitForSeconds(dialogueStartDelay);
-        if (!DialogueManager.Instance.IsDialoguePlaying()) {
-            DialogueManager.Instance.EnterDialogueMode(playerInkJSON, null, null);
+
+        while (DialogueManager.Instance.IsDialoguePlaying() || !playerMovement.IsGrounded()) {
+            yield return null;
         }
+        DialogueManager.Instance.EnterDialogueMode(playerInkJSON, null, null);
     }
+
 }

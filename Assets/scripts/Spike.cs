@@ -9,7 +9,7 @@ public class Spike : MonoBehaviour {
     private void OnCollisionEnter2D(Collision2D collision) {
         PlayerMovement player = collision.gameObject.GetComponent<PlayerMovement>();
 
-        if (player != null) {
+        if (player != null && !DialogueManager.Instance.IsDialoguePlaying()) {
             ContactPoint2D contact = collision.contacts[0];
             Vector2 knockbackDirection = ((Vector2)contact.point - (Vector2)player.transform.position).normalized;
             Vector2 knockbackForceVector = -knockbackDirection * knockbackForce;

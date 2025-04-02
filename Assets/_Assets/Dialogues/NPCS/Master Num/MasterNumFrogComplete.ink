@@ -27,7 +27,7 @@ The toll to pass is all the <color=\#FFD700>coins</color>. Hand them over, and t
 #speaker: player
 Here you go.
 
-#speaker: npc #coinSpend: 100
+#speaker: npc #coinspend: 100
 The path is now open to you. Travel wisely.
 
 -> player_questions

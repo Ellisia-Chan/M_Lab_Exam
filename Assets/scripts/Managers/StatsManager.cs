@@ -64,6 +64,7 @@ public class StatsManager : MonoBehaviour {
     /// </summary>
     /// <param name="amount">The amount of coins spent.</param>
     private void HandleCoinSpend(int amount) {
+        Debug.Log("Spent " + amount + " coins.");
         // Subtract the spent amount from the total coins
         coins -= amount;
 

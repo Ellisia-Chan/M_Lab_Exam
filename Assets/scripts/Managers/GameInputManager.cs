@@ -7,8 +7,6 @@ public class GameInputManager : MonoBehaviour {
 
     private PlayerInputActions inputActions;
 
-    private bool interactPressed = false;
-
     private void Awake() {
         if (Instance == null) {
             Instance = this;
@@ -26,11 +24,9 @@ public class GameInputManager : MonoBehaviour {
         // Jump
         inputActions.Player.Jump.performed += ctx => {
             EventManager.Instance.playerInputEvents.Jump();
-            interactPressed = true;
         };
         inputActions.Player.Jump.canceled += ctx => {
             EventManager.Instance.playerInputEvents.JumpCanceled();
-            interactPressed = false;
         };
 
         // Interact
@@ -55,13 +51,15 @@ public class GameInputManager : MonoBehaviour {
 
     }
 
+
+    /// <summary>
+    /// Returns the normalized movement vector from the player's input actions.
+    /// </summary>
+    /// <returns>A Vector2 representing the normalized movement direction.</returns>
     public Vector2 GetMovementVectorNormalize() {
         return inputActions.Player.Movement.ReadValue<Vector2>().normalized;
     }
 
-    public bool GetSubmitPress() {
-        bool result = interactPressed;
-        interactPressed = false;
-        return result;
-    }
+    public void DisableInputs() => inputActions.Disable();
+    public void EnableInputs() => inputActions.Enable();
 }

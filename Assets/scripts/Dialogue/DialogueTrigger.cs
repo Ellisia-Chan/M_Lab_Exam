@@ -21,13 +21,21 @@ public class DialogueTrigger : Interactible {
         }
     }
 
+
+    /// <summary>
+    /// Interacts with the NPC by entering dialogue mode if the dialogue is not already playing and the required components are available.
+    /// </summary>
     protected override void Interact() {
         if (!DialogueManager.Instance.IsDialoguePlaying() && ink != null && speakerArrow != null) {
             DialogueManager.Instance.EnterDialogueMode(ink, speakerArrow, npcID);
         }
     }
 
-    // This is used when Dialogue has multipl ink files conditions
+
+    /// <summary>
+    /// Sets the ink JSON asset for the dialogue trigger.
+    /// </summary>
+    /// <param name="textAsset">The text asset containing the ink JSON data.</param>
     public void SetInkJSON(TextAsset textAsset) {
         ink = textAsset;
     }

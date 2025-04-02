@@ -62,6 +62,15 @@ public class DialogueManager : MonoBehaviour {
         GetChoicesText();
     }
 
+
+    /// <summary>
+    /// Enters dialogue mode with the specified ink JSON, NPC arrow, and NPC ID.
+    /// Initializes the current story, binds external functions for interaction tracking,
+    /// and updates the UI accordingly.
+    /// </summary>
+    /// <param name="inkJSON">The ink JSON asset containing the dialogue script.</param>
+    /// <param name="npcArrow">The game object representing the NPC's arrow.</param>
+    /// <param name="npcID">The unique identifier of the NPC.</param>
     public void EnterDialogueMode(TextAsset inkJSON, GameObject npcArrow, string npcID) {
         currentStory = new Story(inkJSON.text);
         currentNPCID = npcID;
@@ -89,6 +98,12 @@ public class DialogueManager : MonoBehaviour {
         ContinueStory();
     }
 
+
+    /// <summary>
+    /// Exits the dialogue mode by disabling the player and speaker arrows, 
+    /// notifying the event manager of the dialogue end, and resetting the UI.
+    /// </summary>
+    /// <returns>An IEnumerator to handle the asynchronous operation.</returns>
     private IEnumerator ExitDialogueMode() {
         yield return new WaitForSeconds(0.5f);
 
@@ -105,8 +120,14 @@ public class DialogueManager : MonoBehaviour {
 
         speakerArrow = null;
         currentStory = null;
+
+        EventSystem.current.SetSelectedGameObject(null);
     }
 
+
+    /// <summary>
+    /// Continues the story by displaying the next line of dialogue or presenting choices to the player.
+    /// </summary>
     private void ContinueStory() {
         if (canContinueToNextLine) {
             if (isDialoguePlaying && !isDisplayingChoices) {
@@ -126,6 +147,20 @@ public class DialogueManager : MonoBehaviour {
         }
     }
 
+
+    /// <summary>
+    /// Displays a line of dialogue, character by character, with a typing effect.
+    /// 
+    /// This coroutine takes a string of text and displays it on the dialogue UI, 
+    /// adding each character with a delay to simulate typing. It also handles 
+    /// rich text formatting by checking for '<' and '>' characters.
+    /// 
+    /// Parameters:
+    ///     line (string): The line of dialogue to display.
+    /// 
+    /// Returns:
+    ///     IEnumerator: A coroutine that displays the line of dialogue.
+    /// </summary>
     private IEnumerator DisplayLine(string line) {
         dialogueText.text = "";
         canContinueToNextLine = false;
@@ -156,7 +191,29 @@ public class DialogueManager : MonoBehaviour {
         DisplayChoices();
     }
 
+
+    /// <summary>
+    /// Displays the available choices to the player based on the current story state.
+    /// 
+    /// This function checks if there are any choices available in the current story and 
+    /// updates the UI accordingly. If there are choices, it enables the corresponding 
+    /// UI elements and sets their text. If there are no choices, it disables the UI elements.
+    /// 
+    /// Parameters: None
+    /// 
+    /// Returns: None
+    /// </summary>
     private void DisplayChoices() {
+        if (currentStory == null) {
+            Debug.LogError("currentStory is null! Cannot display choices.");
+            return;
+        }
+
+        if (currentStory.currentChoices == null) {
+            Debug.LogError("currentChoices is null! There are no choices available.");
+            return;
+        }
+
         List<Choice> currentChoices = currentStory.currentChoices;
 
         isDisplayingChoices = currentChoices.Count > 0;
@@ -183,12 +240,26 @@ public class DialogueManager : MonoBehaviour {
         }
     }
 
+
+    /// <summary>
+    /// Hides all the choice buttons by setting their active state to false.
+    /// 
+    /// Parameters: None
+    /// Returns: None
+    /// </summary>
     private void HideChoices() {
         foreach (GameObject choiceButton in choices) {
             choiceButton.gameObject.SetActive(false);
         }
     }
 
+
+    /// <summary>
+    /// Retrieves the TextMeshProUGUI components from the choice game objects.
+    /// 
+    /// Parameters: None
+    /// Returns: None
+    /// </summary>
     private void GetChoicesText() {
         choiceTexts = new TextMeshProUGUI[choices.Length];
 
@@ -199,6 +270,20 @@ public class DialogueManager : MonoBehaviour {
         }
     }
 
+
+    /// <summary>
+    /// Makes a choice in the current dialogue by selecting the option at the specified index.
+    /// 
+    /// This function checks if the dialogue can continue to the next line, then updates the UI 
+    /// accordingly by hiding the choices and toggling the dialogue choice UI. It then selects 
+    /// the choice at the specified index in the current story and continues the story.
+    /// 
+    /// Parameters:
+    ///     choiceIndex (int): The index of the choice to select.
+    /// 
+    /// Returns:
+    ///     None
+    /// </summary>
     public void MakeChoice(int choiceIndex) {
         if (canContinueToNextLine) {
             isDisplayingChoices = false;
@@ -215,6 +300,14 @@ public class DialogueManager : MonoBehaviour {
         }
     }
 
+
+    /// <summary>
+    /// Handles the tags in the dialogue system.
+    /// 
+    /// This function iterates through the list of tags, splits each tag into a key-value pair,
+    /// and performs the corresponding action based on the key.
+    /// </summary>
+    /// <param name="tags">The list of tags to handle.</param>
     private void HandleTags(List<string> tags) {
 
         if (playerArrow != null && speakerArrow != null) {
@@ -232,6 +325,7 @@ public class DialogueManager : MonoBehaviour {
             string key = splitTag[0].Trim().ToLower();
             string value = splitTag[1].Trim();
 
+            Debug.Log($"{key} {value}");
             switch (key) {
                 case "speaker":
                     switch (value) {
@@ -257,15 +351,21 @@ public class DialogueManager : MonoBehaviour {
                     }
                     break;
                 case "reward":
-                    Debug.Log(value);
+                    Debug.Log($"reward: {value}");
                     EventManager.Instance.coinEvents.CoinCollected(int.Parse(value));
                     break;
-                case "coinSpend":
+                case "coinspend":
+                    Debug.Log($"coinSpend: {value}");
                     EventManager.Instance.coinEvents.CoinSpend(int.Parse(value));
                     break;
             }
         }
     }
 
+
+    /// <summary>
+    /// Returns a boolean indicating whether the dialogue is currently playing.
+    /// </summary>
+    /// <returns>True if the dialogue is playing, false otherwise.</returns>
     public bool IsDialoguePlaying() => isDialoguePlaying;
 }

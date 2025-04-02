@@ -130,6 +130,8 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
+    public bool IsGrounded() => isGrounded;
+
 #if UNITY_EDITOR
     private void OnDrawGizmos() {
         Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
