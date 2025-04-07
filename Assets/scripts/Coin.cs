@@ -19,7 +19,7 @@ public class Coin : MonoBehaviour {
         if (collision.gameObject.GetComponent<PlayerController>() != null) {
             boxCollider2D.enabled = false;
             animator.SetTrigger(COIN_COLLECT);
-            EventManager.Instance.coinEvents.CoinCollected(coinValue);
+            EventBus.Publish(new CoinCollectedEvent(coinValue));
         }
     }
 

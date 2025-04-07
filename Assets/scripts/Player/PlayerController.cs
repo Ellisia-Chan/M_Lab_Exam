@@ -37,28 +37,21 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void OnEnable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerInputEvents.OnInteractAction += HandleInteract;
-            EventManager.Instance.playerEvents.OnPlayerHit += HandleDamage;
-            EventManager.Instance.playerEvents.OnPlayerRespawn += PlayerHealthChange;
-            EventManager.Instance.dialogueEvents.OnDialogueEnd += HandlePlayerDialogue;
-        }
+        EventBus.Subscribe<DialogueEndEvent>(e => HandlePlayerDialogue());
+        EventBus.Subscribe<PlayerEventDamageHit>(HandleDamage);
+        EventBus.Subscribe<PlayerEventRespawn>(e => PlayerHealthChange());
+        EventBus.Subscribe<PlayerInputEventInteract>(e => HandleInteract());
     }
 
     private void OnDisable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerInputEvents.OnInteractAction -= HandleInteract;
-            EventManager.Instance.playerEvents.OnPlayerHit -= HandleDamage;
-            EventManager.Instance.playerEvents.OnPlayerRespawn -= PlayerHealthChange;
-            EventManager.Instance.dialogueEvents.OnDialogueEnd -= HandlePlayerDialogue;
-
-        }
+        EventBus.UnSubscribe<DialogueEndEvent>(e => HandlePlayerDialogue());
+        EventBus.UnSubscribe<PlayerEventDamageHit>(HandleDamage);
+        EventBus.UnSubscribe<PlayerEventRespawn>(e => PlayerHealthChange());
+        EventBus.UnSubscribe<PlayerInputEventInteract>(e => HandleInteract());
     }
 
     private void Start() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerEvents.PlayerHealthChange(health);
-        }
+        EventBus.Publish(new PlayerEventHealthChange(health));
     }
 
 
@@ -74,9 +67,7 @@ public class PlayerController : MonoBehaviour {
     /// Returns: None
     /// </summary>
     private void CheckHealth() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerEvents.PlayerHealthChange(health);
-        }
+        EventBus.Publish(new PlayerEventHealthChange(health));
 
         if (health <= 0) {
             Debug.Log("Dead");
@@ -89,10 +80,10 @@ public class PlayerController : MonoBehaviour {
     /// Handles the player taking damage, applying the damage to the player's health and triggering a camera shake effect.
     /// </summary>
     /// <param name="damage">The amount of damage to apply to the player's health.</param>
-    public void HandleDamage(int damage) {
+    public void HandleDamage(PlayerEventDamageHit e) {
         if (CameraShake.Instance != null) CameraShake.Instance.Shake(cameraShakeIntensity, cameraShakeDuration);
 
-        health -= damage;
+        health -= e.damage;
         CheckHealth();
 
         StartCoroutine(FlashRedOnDamage());
@@ -120,7 +111,7 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     private void Die() {
         GameManager.Instance.currentState = GameManager.State.DEAD;
-        EventManager.Instance.playerEvents.PlayerDeath();
+        EventBus.Publish(new PlayerEventDeath());
         rb.velocity = Vector2.zero;
         StartCoroutine(RespawnSequence());
     }
@@ -148,9 +139,7 @@ public class PlayerController : MonoBehaviour {
     /// Returns: None
     /// </summary>
     private void PlayerHealthChange() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerEvents.PlayerHealthChange(health);
-        }
+        EventBus.Publish(new PlayerEventHealthChange(health));
     }
 
 

@@ -32,21 +32,15 @@ public class UIManager : MonoBehaviour {
     }
 
     private void OnEnable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerEvents.OnPlayerDeath += ShowDeadUI;
-            EventManager.Instance.playerEvents.OnPlayerRespawn += HideDeadUI;
-            EventManager.Instance.gameEvents.OnGameStateEnd += ShowGameOverUI;
-
-        }
+        EventBus.Subscribe<GameEventStateEnd>(e => ShowGameOverUI());
+        EventBus.Subscribe<PlayerEventDeath>(e => ShowDeadUI());
+        EventBus.Subscribe<PlayerEventRespawn>(e => HideDeadUI());
     }
 
     private void OnDisable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerEvents.OnPlayerDeath -= ShowDeadUI;
-            EventManager.Instance.playerEvents.OnPlayerRespawn -= HideDeadUI;
-            EventManager.Instance.gameEvents.OnGameStateEnd -= ShowGameOverUI;
-
-        }
+        EventBus.UnSubscribe<GameEventStateEnd>(e => ShowGameOverUI());
+        EventBus.UnSubscribe<PlayerEventDeath>(e => ShowDeadUI());
+        EventBus.UnSubscribe<PlayerEventRespawn>(e => HideDeadUI());
     }
 
     // Stats UI

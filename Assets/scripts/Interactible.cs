@@ -16,15 +16,11 @@ public abstract class Interactible : MonoBehaviour {
     }
 
     private void OnEnable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerInputEvents.OnInteractAction += HandleInteract;
-        }
+        EventBus.Subscribe<PlayerInputEventInteract>(e => HandleInteract());
     }
 
     private void OnDisable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerInputEvents.OnInteractAction -= HandleInteract;
-        }
+        EventBus.UnSubscribe<PlayerInputEventInteract>(e => HandleInteract());
     }
 
     private void HandleInteract() {

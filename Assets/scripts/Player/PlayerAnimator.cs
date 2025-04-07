@@ -16,15 +16,11 @@ public class PlayerAnimator : MonoBehaviour {
     }
 
     private void OnEnable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.dialogueEvents.OnDialogueStart += FreezeAnimation;
-        }
+        EventBus.Subscribe<DialogueStartEvent>(e =>FreezeAnimation());
     }
 
     private void OnDisable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.dialogueEvents.OnDialogueStart -= FreezeAnimation;
-        }
+        EventBus.UnSubscribe<DialogueStartEvent>(e =>FreezeAnimation());
     }
 
     private void FreezeAnimation() {

@@ -16,19 +16,15 @@ public class MasterNumFrog : MonoBehaviour {
     }
 
     private void Start() {
-        CheckFrogCount(StatsManager.Instance.GetFrogInteractedCount());
+        CheckFrogCount(new FrogEventCountChange(StatsManager.Instance.GetFrogInteractedCount()));
     }
 
     private void OnEnable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.frogEvents.OnFrogCountChange += CheckFrogCount;
-        }
+        EventBus.Subscribe<FrogEventCountChange>(CheckFrogCount);
     }
 
     private void OnDisable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.frogEvents.OnFrogCountChange -= CheckFrogCount;
-        }
+        EventBus.UnSubscribe<FrogEventCountChange>(CheckFrogCount);
     }
 
 
@@ -36,8 +32,8 @@ public class MasterNumFrog : MonoBehaviour {
     /// Checks if the frog count has reached a certain threshold and performs actions accordingly.
     /// </summary>
     /// <param name="count">The current frog count.</param>
-    private void CheckFrogCount(int count) {
-        if (count >= 10) {
+    private void CheckFrogCount(FrogEventCountChange e) {
+        if (e.count>= 10) {
             dialogueTrigger.SetInkJSON(completeFrogJSON);
             pathBlock.SetActive(false);
         }

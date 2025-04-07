@@ -23,31 +23,31 @@ public class GameInputManager : MonoBehaviour {
 
         // Jump
         inputActions.Player.Jump.performed += ctx => {
-            EventManager.Instance.playerInputEvents.Jump();
+            EventBus.Publish(new PlayerInputEventJumpAction());
         };
         inputActions.Player.Jump.canceled += ctx => {
-            EventManager.Instance.playerInputEvents.JumpCanceled();
+            EventBus.Publish(new PlayerInputEventJumpCancelled());
         };
 
         // Interact
-        inputActions.Player.Interact.performed += ctx => EventManager.Instance.playerInputEvents.Interact();
+        inputActions.Player.Interact.performed += ctx => EventBus.Publish(new PlayerInputEventInteract());
 
         // Continue
-        inputActions.Player.Continue.performed += ctx => EventManager.Instance.playerInputEvents.Continue();
+        inputActions.Player.Continue.performed += ctx => EventBus.Publish(new PlayerInputEventContinue());
     }
 
     private void OnDisable() {
         inputActions.Disable();
 
         // Jump
-        inputActions.Player.Jump.performed -= ctx => EventManager.Instance.playerInputEvents.Jump();
-        inputActions.Player.Jump.canceled -= ctx => EventManager.Instance.playerInputEvents.JumpCanceled();
+        inputActions.Player.Jump.performed -= ctx => EventBus.Publish(new PlayerInputEventJumpAction());
+        inputActions.Player.Jump.canceled -= ctx => EventBus.Publish(new PlayerInputEventJumpCancelled());
 
         // Interact
-        inputActions.Player.Interact.performed -= ctx => EventManager.Instance.playerInputEvents.Interact();
+        inputActions.Player.Interact.performed -= ctx => EventBus.Publish(new PlayerInputEventInteract());
 
         // Continue
-        inputActions.Player.Continue.performed -= ctx => EventManager.Instance.playerInputEvents.Continue();
+        inputActions.Player.Continue.performed -= ctx => EventBus.Publish(new PlayerInputEventContinue());
 
     }
 

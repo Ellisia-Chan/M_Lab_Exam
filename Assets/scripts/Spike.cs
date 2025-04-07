@@ -15,7 +15,7 @@ public class Spike : MonoBehaviour {
             Vector2 knockbackForceVector = -knockbackDirection * knockbackForce;
             player.ApplyKnockBack(knockbackForceVector);
 
-            EventManager.Instance.playerEvents.PlayerHit(damage);
+            EventBus.Publish(new PlayerEventDamageHit(damage));
         }
     }
 }

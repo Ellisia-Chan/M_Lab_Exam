@@ -14,6 +14,6 @@ public class DeadUI : MonoBehaviour {
     }
 
     private void OnAnimFinish() {
-        EventManager.Instance.playerEvents.PlayerRespawn();
+        EventBus.Publish(new PlayerEventRespawn());
     }
 }

@@ -8,23 +8,19 @@ public class FrogUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI frogCountText;
 
     private void Start() {;
-        UpdateFrogCountText(StatsManager.Instance.GetFrogInteractedCount());
+        UpdateFrogCountText(new FrogEventCountChange(StatsManager.Instance.GetFrogInteractedCount()));
     }
 
     private void OnEnable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.frogEvents.OnFrogCountChange += UpdateFrogCountText;
-        }
+        EventBus.Subscribe<FrogEventCountChange>(UpdateFrogCountText);
     }
 
     private void OnDisable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.frogEvents.OnFrogCountChange -= UpdateFrogCountText;
-        }
+        EventBus.UnSubscribe<FrogEventCountChange>(UpdateFrogCountText);
     }
 
-    private void UpdateFrogCountText(int amount) {
-        frogCountText.text = $"{amount}/10";
+    private void UpdateFrogCountText(FrogEventCountChange e) {
+        frogCountText.text = $"{e.count}/10";
     }
 
 }

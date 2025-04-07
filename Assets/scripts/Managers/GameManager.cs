@@ -52,8 +52,8 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     private void Start() {
         if (gameState == GameState.ISGAMEPLAYING) {
-            EventManager.Instance.gameEvents.GameStart();
-            EventManager.Instance.gameEvents.GameStateChange();
+            EventBus.Publish(new GameEventStateStart());
+            EventBus.Publish(new GameEventStateChange());
         }
     }
 
@@ -68,10 +68,8 @@ public class GameManager : MonoBehaviour {
     /// Called when the script is enabled. This function is used to subscribe to events that are triggered by other scripts.
     /// </summary>
     private void OnEnable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerEvents.OnPlayerRespawn += RespawnPlayerState;
-            EventManager.Instance.gameEvents.OnGameStateEnd += SetGameOverState;
-        }
+        EventBus.Subscribe<GameEventStateEnd>(e => SetGameOverState());
+        EventBus.Subscribe<PlayerEventRespawn>(e => RespawnPlayerState());
     }
 
 
@@ -79,10 +77,8 @@ public class GameManager : MonoBehaviour {
     /// Called when the script is disabled. This function is used to unsubscribe from events that are triggered by other scripts.
     /// </summary>
     private void OnDisable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerEvents.OnPlayerRespawn -= RespawnPlayerState;
-            EventManager.Instance.gameEvents.OnGameStateEnd -= SetGameOverState;
-        }
+        EventBus.UnSubscribe<GameEventStateEnd>(e => SetGameOverState());
+        EventBus.UnSubscribe<PlayerEventRespawn>(e => RespawnPlayerState());
     }
 
 
@@ -122,7 +118,8 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     private void SetGameOverState() {
         gameState = GameState.GAMEOVER;
-        EventManager.Instance.gameEvents.GameStateChange();
+        
+        EventBus.Publish(new GameEventStateChange());
     }
 
 

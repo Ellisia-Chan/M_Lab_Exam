@@ -9,31 +9,23 @@ public class CoinUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI coinText;
 
     private void Start() {
-        UpdateCoinUI(StatsManager.Instance.GetPlayerCoins());
+        UpdateCoinUI(new CoinValueChangeEvent(StatsManager.Instance.GetPlayerCoins()));
     }
 
     private void OnEnable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.coinEvents.OnCoinValueChange += UpdateCoinUI;
-        }
+        EventBus.Subscribe<CoinValueChangeEvent>(UpdateCoinUI);
 
         if (StatsManager.Instance != null) {
-            UpdateCoinUI(StatsManager.Instance.GetPlayerCoins());
+            UpdateCoinUI(new CoinValueChangeEvent(StatsManager.Instance.GetPlayerCoins()));
         }
     }
 
     private void OnDisable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.coinEvents.OnCoinValueChange -= UpdateCoinUI;
-        }
+        EventBus.UnSubscribe<CoinValueChangeEvent>(UpdateCoinUI);
+
     }
 
-
-    /// <summary>
-    /// Updates the Coin UI text to display the specified amount.
-    /// </summary>
-    /// <param name="amount">The amount of coins to display.</param>
-    private void UpdateCoinUI(int amount) {
-        coinText.text = $"x {amount}";
+    private void UpdateCoinUI(CoinValueChangeEvent e) {
+        coinText.text = $"x {e.amount}";
     }
 }

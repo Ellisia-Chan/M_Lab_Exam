@@ -46,15 +46,12 @@ public class DialogueManager : MonoBehaviour {
     public static DialogueManager GetInstance() => Instance;
 
     private void OnEnable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerInputEvents.OnContinueAction += ContinueStory;
-        }
+        EventBus.Subscribe<PlayerInputEventContinue>(e => ContinueStory());
     }
 
     private void OnDisable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerInputEvents.OnContinueAction -= ContinueStory;
-        }
+        EventBus.UnSubscribe<PlayerInputEventContinue>(e => ContinueStory());
+
     }
 
     private void Start() {
@@ -81,7 +78,7 @@ public class DialogueManager : MonoBehaviour {
             currentStory.BindExternalFunction("SetHasInteracted", () => interactedNPCS[currentNPCID] = true);
 
             if (currentNPCID.Contains("FrogQuiz") && !interactedNPCS.ContainsKey(currentNPCID)) {
-                EventManager.Instance.frogEvents.FrogInteracted();
+                EventBus.Publish(new FrogEventInteracted());
             }
         }
 
@@ -90,7 +87,8 @@ public class DialogueManager : MonoBehaviour {
 
         isDialoguePlaying = true;
         canContinueToNextLine = true;
-        EventManager.Instance.dialogueEvents.DialogueStart();
+
+        EventBus.Publish(new DialogueStartEvent());
 
         UIManager.Instance.ToggleDialogueUI(true);
         UIManager.Instance.ToggleDialogueChoiceUI(false);
@@ -110,7 +108,7 @@ public class DialogueManager : MonoBehaviour {
         if (playerArrow != null) { playerArrow.SetActive(false); }
         if (speakerArrow != null) { speakerArrow.SetActive(false); }
 
-        EventManager.Instance.dialogueEvents.DialogueEnd();
+        EventBus.Publish(new DialogueEndEvent());
         isDialoguePlaying = false;
 
         UIManager.Instance.ToggleDialogueUI(false);
@@ -352,11 +350,13 @@ public class DialogueManager : MonoBehaviour {
                     break;
                 case "reward":
                     Debug.Log($"reward: {value}");
-                    EventManager.Instance.coinEvents.CoinCollected(int.Parse(value));
+                    //EventManager.Instance.coinEvents.CoinCollected(int.Parse(value));
+                    EventBus.Publish(new CoinCollectedEvent(int.Parse(value)));
                     break;
                 case "coinspend":
                     Debug.Log($"coinSpend: {value}");
-                    EventManager.Instance.coinEvents.CoinSpend(int.Parse(value));
+                    //EventManager.Instance.coinEvents.CoinSpend(int.Parse(value));
+                    EventBus.Publish(new CoinSpendEvent(int.Parse(value)));
                     break;
             }
         }

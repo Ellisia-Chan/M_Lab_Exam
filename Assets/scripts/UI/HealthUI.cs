@@ -10,22 +10,18 @@ public class HealthUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI healthText;
 
     private void OnEnable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerEvents.OnPlayerHealthChange += UpdateHealthUI;
-        }
+        EventBus.Subscribe<PlayerEventHealthChange>(UpdateHealthUI);
     }
 
     private void OnDisable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerEvents.OnPlayerHealthChange -= UpdateHealthUI;
-        }
+        EventBus.UnSubscribe<PlayerEventHealthChange>(UpdateHealthUI);
     }
 
-    private void UpdateHealthUI(int healthValue) {
-        healthBarFill.fillAmount = healthValue / 100f;
+    private void UpdateHealthUI(PlayerEventHealthChange e) {
+        healthBarFill.fillAmount = e.health / 100f;
 
-        if (healthValue >= 0) {
-            healthText.text = $"{healthValue}";
+        if (e.health >= 0) {
+            healthText.text = $"{e.health}";
         } else {
             healthText.text = "0";
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,57 +25,40 @@ public class StatsManager : MonoBehaviour {
     }
 
 
-    /// <summary>
-    /// Called when the script is enabled. 
-    /// This function is used to subscribe to events that are triggered by other scripts.
-    /// </summary>
     private void OnEnable() {
-        EventManager.Instance.coinEvents.OnCoinCollected += HandleCoinCollected;
-        EventManager.Instance.frogEvents.OnFrogInteracted += HandleFrogInteracted;
-        EventManager.Instance.coinEvents.OnCoinSpend += HandleCoinSpend;
+        EventBus.Subscribe<CoinCollectedEvent>(HandleCoinCollected);
+        EventBus.Subscribe<CoinSpendEvent>(HandleCoinSpend);
+        EventBus.Subscribe<FrogEventInteracted>(e => HandleFrogInteracted());
     }
 
-    /// <summary>
-    /// Handles the event when the StatsManager is disabled.
-    /// Removes event listeners for coin collection, frog interaction, and coin spending.
-    /// </summary>
+
     private void OnDisable() {
-        EventManager.Instance.coinEvents.OnCoinCollected -= HandleCoinCollected;
-        EventManager.Instance.frogEvents.OnFrogInteracted -= HandleFrogInteracted;
-        EventManager.Instance.coinEvents.OnCoinSpend -= HandleCoinSpend;
+        EventBus.UnSubscribe<CoinCollectedEvent>(HandleCoinCollected);
+        EventBus.UnSubscribe<FrogEventInteracted>(e => HandleFrogInteracted());
+
     }
 
 
-    /// <summary>
-    /// Handles the event when a coin is collected.
-    /// </summary>
-    /// <param name="amount">The amount of coins collected.</param>
-    private void HandleCoinCollected(int amount) {
+
+    private void HandleCoinCollected(CoinCollectedEvent e) {
         // Update the score and coin count
-        score += amount;
-        coins += amount;
+        score += e.amount;
+        coins += e.amount;
 
-        // Notify the EventManager of the coin value change
-        EventManager.Instance.coinEvents.CoinValueChange(coins);
+        EventBus.Publish(new CoinValueChangeEvent(coins));
     }
 
 
-    /// <summary>
-    /// Handles the event when a coin is spent.
-    /// </summary>
-    /// <param name="amount">The amount of coins spent.</param>
-    private void HandleCoinSpend(int amount) {
-        Debug.Log("Spent " + amount + " coins.");
+    private void HandleCoinSpend(CoinSpendEvent e) {
         // Subtract the spent amount from the total coins
-        coins -= amount;
+        coins -= e.amount;
 
         // Ensure the coin count does not go below 0
         if (coins <= 0) {
             coins = 0;
         }
 
-        // Notify the EventManager of the coin value change
-        EventManager.Instance.coinEvents.CoinValueChange(coins);
+        EventBus.Publish(new CoinValueChangeEvent(coins));
     }
 
 
@@ -84,8 +68,8 @@ public class StatsManager : MonoBehaviour {
     private void HandleFrogInteracted() {
         // Increment the interacted frogs count
         interactedFrogs++;
-        // Notify the EventManager of the frog count change
-        EventManager.Instance.frogEvents.FrogCountChange(interactedFrogs);
+        
+        EventBus.Publish(new FrogEventCountChange(interactedFrogs));
     }
 
 

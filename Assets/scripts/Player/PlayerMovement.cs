@@ -26,17 +26,13 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private void OnEnable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerInputEvents.OnJumpAction += HandleJump;
-            EventManager.Instance.dialogueEvents.OnDialogueStart += FreezePosition;
-        }
+        EventBus.Subscribe<DialogueStartEvent>(e => FreezePosition());
+        EventBus.Subscribe<PlayerInputEventJumpAction>(e => HandleJump());
     }
 
     private void OnDisable() {
-        if (EventManager.Instance != null) {
-            EventManager.Instance.playerInputEvents.OnJumpAction -= HandleJump;
-            EventManager.Instance.dialogueEvents.OnDialogueStart -= FreezePosition;
-        }
+        EventBus.UnSubscribe<DialogueStartEvent>(e => FreezePosition());
+        EventBus.UnSubscribe<PlayerInputEventJumpAction>(e => HandleJump());
     }
 
     private void Update() {
@@ -69,7 +65,7 @@ public class PlayerMovement : MonoBehaviour {
                 if (!isKnockedBack) {
                     rb.velocity = new Vector2(moveVector.x * moveSpeed, rb.velocity.y);
                 }
-            } 
+            }
         }
     }
 
@@ -84,7 +80,7 @@ public class PlayerMovement : MonoBehaviour {
                 if (isGrounded && !isKnockedBack) {
                     rb.velocity = new Vector2(rb.velocity.x, jumpForce);
                 }
-            } 
+            }
         }
     }
 
